@@ -10,36 +10,27 @@
         .container { background: rgba(25, 20, 15, 0.98); padding: 30px; width: 100%; max-width: 500px; border: 4px solid #8c734c; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.8); position: relative; }
         h1 { font-family: 'Cinzel', serif; color: #c9a063; letter-spacing: 3px; margin-bottom: 5px; text-transform: uppercase; }
         .subtitle { font-family: 'Cinzel', serif; color: #8c734c; font-size: 0.8rem; margin-bottom: 25px; border-bottom: 1px solid #c9a063; display: inline-block; padding-bottom: 5px; }
-        
         .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
         .tab-btn { flex: 1; padding: 12px; background: #1a1510; border: 1px solid #5c4a31; color: #8c734c; cursor: pointer; font-family: 'Cinzel', serif; font-size: 0.7rem; }
         .tab-btn.active { background: #8c734c; color: #1a1510; font-weight: bold; }
-        
         .section { display: none; text-align: left; animation: fadeIn 0.5s ease; }
         .section.active { display: block; }
-
         .search-container { position: relative; width: 100%; }
         input { width: 100%; padding: 12px; background: #120f0a; border: 1px solid #5c4a31; color: #f0e68c; font-family: 'Cinzel', serif; margin-top: 5px; box-sizing: border-box; outline: none; }
-        
         .suggestions-list { position: absolute; top: 100%; left: 0; width: 100%; background: #1a1510; border: 1px solid #8c734c; border-top: none; z-index: 10; display: none; max-height: 150px; overflow-y: auto; }
         .suggestion-item { padding: 10px; color: #c9a063; cursor: pointer; font-size: 0.85rem; border-bottom: 1px solid rgba(140, 115, 76, 0.2); }
         .suggestion-item:hover { background: #8c734c; color: #1a1510; }
-
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .full-width { grid-column: span 2; }
         label { font-family: 'Cinzel', serif; color: #c9a063; font-size: 0.65rem; margin-top: 10px; text-transform: uppercase; display: block; }
-        
         .submit-btn { width: 100%; padding: 15px; margin-top: 20px; background: linear-gradient(45deg, #8c734c, #5c4a31); color: #1a1510; border: 1px solid #c9a063; font-family: 'Cinzel', serif; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        
         .verified-card { background: rgba(0,0,0,0.5); border: 2px solid #c9a063; padding: 20px; margin-top: 20px; }
         .stat-line { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(140,115,76,0.3); padding: 6px 0; }
         .stat-label { color: #8c734c; font-size: 0.75rem; }
         .stat-value { color: #f0e68c; font-weight: bold; }
-        
         .footer { margin-top: 30px; border-top: 1px solid #5c4a31; padding-top: 15px; text-align: center; }
         .discord-link { color: #c9a063; text-decoration: none; font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.9rem; }
-        .status-badge { font-size: 0.65rem; color: #8c734c; margin-top: 10px; display: block; letter-spacing: 1px; }
-        
+        .status-badge { font-size: 0.6rem; color: #8c734c; margin-top: 12px; display: block; letter-spacing: 0.5px; font-style: italic; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
@@ -59,12 +50,9 @@
             <input type="text" id="searchName" placeholder="Enter Soldier Name..." oninput="handleAutocomplete()" autocomplete="off">
             <div id="suggestions" class="suggestions-list"></div>
         </div>
-        <span id="loadMsg" class="status-badge">🛡️ Connecting to Imperial Database...</span>
+        <span id="loadMsg" class="status-badge">All data is verified, but a margin of error remains.</span>
         <button class="submit-btn" onclick="searchSoldier()">Search Archives</button>
-        
-        <div id="searchResult" style="display:none;">
-            <div class="verified-card" id="statsOutput"></div>
-        </div>
+        <div id="searchResult" style="display:none;"><div class="verified-card" id="statsOutput"></div></div>
     </div>
 
     <div id="submitSection" class="section">
@@ -76,17 +64,16 @@
             <div><label>Crowns</label><input type="text" id="subCrowns"></div>
             <div><label>Wins</label><input type="text" id="subWins"></div>
             <div><label>Losses</label><input type="text" id="subLosses"></div>
-            <div><label>Time</label><input type="text" id="subTime"></div>
-            <div><label>Buried</label><input type="text" id="subBuried"></div>
+            <div><label>Monarch Wins</label><input type="text" id="subMonarch"></div>
+            <div><label>Bodies Buried</label><input type="text" id="subBuried"></div>
+            <div class="full-width"><label>Time Played</label><input type="text" id="subTime"></div>
             <div class="full-width"><label>Proof (ImgBB URL)</label><input type="text" id="subProof"></div>
         </div>
         <button class="submit-btn" id="finalSubmitBtn" onclick="handleDispatch()">Submit Dispatch</button>
         <p id="msg" style="color: #4CAF50; font-size: 0.8rem; text-align: center; margin-top: 10px; display: none;">📜 Dispatch sent to the Elders!</p>
     </div>
 
-    <div class="footer">
-        <a href="https://discord.gg/x4djQaBpnQ" target="_blank" class="discord-link">🏰 JOIN OUR DISCORD SERVER</a>
-    </div>
+    <div class="footer"><a href="https://discord.gg/x4djQaBpnQ" target="_blank" class="discord-link">🏰 JOIN OUR DISCORD SERVER</a></div>
 </div>
 
 <script>
@@ -117,14 +104,12 @@
                         kills: row.c[1]?.v || "0", deaths: row.c[2]?.v || "0",
                         gold: row.c[3]?.v || "0", crowns: row.c[4]?.v || "0",
                         wins: row.c[5]?.v || "0", losses: row.c[6]?.v || "0",
-                        time: row.c[7]?.v || "0", buried: row.c[8]?.v || "0"
+                        time: row.c[7]?.v || "0", buried: row.c[8]?.v || "0",
+                        monarch_wins: row.c[9]?.v || "0" // جلب بيانات موناكو من العمود العاشر
                     };
                 }
             });
-            document.getElementById('loadMsg').innerText = "🛡️ Archives Synchronized Successfully";
-        } catch (e) {
-            document.getElementById('loadMsg').innerText = "⚠️ Offline Mode - Local Archives Only";
-        }
+        } catch (e) { console.error("Sync error"); }
     }
 
     fetchStats();
@@ -159,18 +144,16 @@
         if(data) {
             resDiv.style.display = 'block';
             output.innerHTML = `<div class="stat-line"><span class="stat-label">SOLDIER:</span><span class="stat-value" style="color:#c9a063">${nameInput.toUpperCase()}</span></div>` + 
-            Object.keys(data).map(k => `<div class="stat-line"><span class="stat-label">${k.toUpperCase()}:</span><span class="stat-value">${data[k]}</span></div>`).join('');
-        } else { alert("Not found in current records."); }
+            Object.keys(data).map(k => `<div class="stat-line"><span class="stat-label">${k.replace('_', ' ').toUpperCase()}:</span><span class="stat-value">${data[k]}</span></div>`).join('');
+        } else { alert("Soldier not found."); }
     }
 
     function handleDispatch() {
         const name = document.getElementById('subName').value;
         const proof = document.getElementById('subProof').value;
-        if (!name || !proof) return alert("Soldier Name and Proof are required!");
-        
+        if (!name || !proof) return alert("Name and Proof URL are mandatory!");
         const btn = document.getElementById('finalSubmitBtn');
         btn.innerText = "Dispatching..."; btn.disabled = true;
-        
         const val = (id) => document.getElementById(id).value.trim() || "0";
         const fields = [
             { name: "Soldier", value: name, inline: true },
@@ -180,15 +163,14 @@
             { name: "Crowns", value: val('subCrowns'), inline: true },
             { name: "Wins", value: val('subWins'), inline: true },
             { name: "Losses", value: val('subLosses'), inline: true },
+            { name: "Monarch Wins", value: val('subMonarch'), inline: true },
             { name: "Time", value: val('subTime'), inline: true },
-            { name: "Buried", value: val('subBuried'), inline: true },
             { name: "Proof", value: proof }
         ];
-
         fetch(WEBHOOK_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ embeds: [{ title: "⚔️ New Statistics Update", color: 13213795, fields: fields, timestamp: new Date() }] })
+            body: JSON.stringify({ embeds: [{ title: "⚔️ Stats Update Request", color: 13213795, fields: fields, timestamp: new Date() }] })
         }).then(() => {
             document.getElementById('msg').style.display = 'block';
             document.querySelectorAll('#submitSection input').forEach(i => i.value = "");
@@ -196,11 +178,7 @@
         });
     }
 
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-container')) {
-            document.getElementById('suggestions').style.display = 'none';
-        }
-    });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.search-container')) document.getElementById('suggestions').style.display = 'none'; });
 </script>
 </body>
 </html>
