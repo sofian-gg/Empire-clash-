@@ -175,14 +175,19 @@
 
     async function fetchStats() {
         try {
-            const response = await fetch(DB_URL + '?nocache=' + new Date().getTime());
+            const response = await fetch("http://129.151.253.208:3000/get-stats");
+        
+            if (!response.ok) throw new Error('Serveur Oracle injoignable');
+        
             const data = await response.json();
             verifiedSoldiers = {};
             data.forEach(player => {
                 verifiedSoldiers[player.name.toLowerCase()] = player;
             });
-            console.log("Archives impériales synchronisées.");
-        } catch (e) { console.error("Database sync failed.", e); }
+            console.log("Archives synchronisées depuis Oracle !");
+        } catch (e) { 
+            console.error("Erreur de synchronisation : ", e.message); 
+        }
     }
     fetchStats();
 
