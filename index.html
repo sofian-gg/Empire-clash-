@@ -174,27 +174,22 @@
 
     async function fetchStats() {
         try {
-            console.log("Tentative de synchronisation avec le serveur Oracle...");
-            const response = await fetch(`${SERVER_URL}/get-stats`);
+            const response = await fetch(`${SERVER_URL}/get-stats`, {
+                headers: { "Bypass-Tunnel-Reminder": "true" }
+            });
             
-            if (!response.ok) {
-                throw new Error(`Serveur injoignable (Status: ${response.status})`);
-            }
-
+            if (!response.ok) throw new Error(`Status: ${response.status}`);
+            
             const data = await response.json();
-
             verifiedSoldiers = {};
             data.forEach(player => {
-                if(player.name) {
-                    verifiedSoldiers[player.name.toLowerCase()] = player;
-                }
+                if(player.name) verifiedSoldiers[player.name.toLowerCase()] = player;
             });
-            console.log("Archives impériales synchronisées avec succès !");
+            console.log("Archives synchronisées via PM2 !");
         } catch (e) { 
-            console.error("Échec de la synchronisation :", e.message); 
+            console.error("Erreur de synchronisation : ", e.message); 
         }
     }
-
     fetchStats();
 
     function handleAutocomplete() {
