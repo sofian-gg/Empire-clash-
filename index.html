@@ -6,7 +6,7 @@
     <title>Empire Clash | Imperial Military Archives</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
     <style>
-        /* التنسيقات السينمائية الأصلية */
+        /* التنسيقات السينمائية الأصلية - لم يتم تغيير أي شيء هنا */
         @keyframes siteEntrance {
             from { opacity: 0; transform: scale(0.98) translateY(30px); filter: blur(15px); }
             to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
@@ -192,8 +192,8 @@
     const SHEET_ID = '1oQ4GC7sTXCikDYdQLY96CwPSUaeIoOJ3x6mYUjlZuYI';
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
     
-    // إعدادات الـ Webhook والأمان
-    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1484373230788673587/t5GXttLtRZWkv27Ceg8CS8-vYKlr0Oy1YW7PZUHyDxnTMf-PiXR6ds3i5S5nM0SrYd-l";
+    // إعدادات البوت (تعديل الـ IP ليطابق سيرفر البوت)
+    const BOT_SERVER_URL = "http://212.132.120.102:15534/";
     const SECRET_AUTH_KEY = "EMPIRE_SECURE_2026_XYZ"; 
 
     let verifiedSoldiers = {};
@@ -315,6 +315,7 @@
         } else { alert("Soldier not found!"); }
     }
 
+    // --- الجزء المحدث لإرسال كل البيانات للبوت لضمان ظهور الـ Approve/Reject ---
     async function handleDispatch() {
         const name = document.getElementById('subName').value;
         const proof = document.getElementById('subProof').value;
@@ -323,41 +324,39 @@
         const btn = document.getElementById('finalSubmitBtn');
         btn.innerText = "Dispatching..."; btn.disabled = true;
 
-        // تجهيز البيانات للإرسال إلى الديسكورد
-        const embedData = {
-            embeds: [{
-                title: "🛡️ Imperial Stats Update Request",
-                color: 13213795,
-                fields: [
-                    { name: "Soldier", value: name.toUpperCase(), inline: true },
-                    { name: "Kills", value: document.getElementById('subKills').value || "0", inline: true },
-                    { name: "Deaths", value: document.getElementById('subDeaths').value || "0", inline: true },
-                    { name: "Win Rate", value: (document.getElementById('subWins').value / (parseInt(document.getElementById('subWins').value) + parseInt(document.getElementById('subLosses').value || 1)) * 100).toFixed(1) + "%", inline: true },
-                    { name: "Proof Link", value: `[View Image](${proof})` }
-                ],
-                footer: { text: "Security Key: Verified ✅" },
-                timestamp: new Date()
-            }]
+        const statsData = {
+            "auth_key": SECRET_AUTH_KEY,
+            "Soldier": name,
+            "Kills": document.getElementById('subKills').value || "0",
+            "Deaths": document.getElementById('subDeaths').value || "0",
+            "Gold": document.getElementById('subGold').value || "0",
+            "Crowns": document.getElementById('subCrowns').value || "0",
+            "Wins": document.getElementById('subWins').value || "0",
+            "Losses": document.getElementById('subLosses').value || "0",
+            "Monarch": document.getElementById('subMonarch').value || "0",
+            "Buried": document.getElementById('subBuried').value || "0",
+            "Time": document.getElementById('subTime').value || "0",
+            "Proof": proof
         };
 
         try {
-            const response = await fetch(DISCORD_WEBHOOK_URL, {
+            const response = await fetch(BOT_SERVER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(embedData)
+                body: JSON.stringify(statsData)
             });
 
             if (response.ok) {
                 document.getElementById('msg').style.display = 'block';
                 btn.innerText = "Dispatch Stats"; btn.disabled = false;
-                // إفراغ الخانات بعد النجاح
+                // إفراغ الخانات
                 document.querySelectorAll('#submitSection input').forEach(i => i.value = "");
             } else {
-                alert("The Elders rejected the request. Check your Webhook URL.");
+                alert("Unauthorized or Bot Offline.");
                 btn.innerText = "Dispatch Stats"; btn.disabled = false;
             }
         } catch (err) {
-            alert("Connection to the Webhook failed.");
+            alert("Connection Failed. Make sure your Python bot is running.");
             btn.innerText = "Dispatch Stats"; btn.disabled = false;
         }
     }
