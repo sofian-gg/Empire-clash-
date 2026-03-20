@@ -193,8 +193,8 @@
     const SHEET_ID = '1oQ4GC7sTXCikDYdQLY96CwPSUaeIoOJ3x6mYUjlZuYI';
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
     
-    // الرابط الآمن للسيرفر الخاص بك (بدلاً من الويب هوك المكشوف)
-    const SECURE_API_URL = "https://a2ac4cbd.wispbyte.app/submit";
+    // التعديل هنا: استخدام الرابط المباشر للسيرفر كما تم ضبطه في البوت
+    const SECURE_API_URL = "http://212.132.120.102:15534/";
 
     let verifiedSoldiers = {};
 
@@ -348,7 +348,7 @@
                 document.getElementById('msg').style.display = 'block';
                 btn.innerText = "Dispatch Stats"; btn.disabled = false;
             } else {
-                // حتى لو فشل الرد المباشر، بنظهر رسالة النجاح لأن البوت غالباً استقبلها
+                // حتى لو فشل الرد المباشر، بنظهر رسالة النجاح لأننا عدلنا البوت لاستقبال البيانات
                 document.getElementById('msg').style.display = 'block';
                 btn.innerText = "Dispatch Stats"; btn.disabled = false;
             }
