@@ -1,0 +1,3 @@
+# Fichiers sensibles — ne jamais commiter
+TOKEN.env
+config.js
