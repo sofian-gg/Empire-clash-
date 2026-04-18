@@ -110,6 +110,7 @@
                 <button class="lb-filter-btn active" onclick="updateLeaderboard('kills', this)">Kills</button>
                 <button class="lb-filter-btn" onclick="updateLeaderboard('kd', this)">K/D</button>
                 <button class="lb-filter-btn" onclick="updateLeaderboard('winrate', this)">Winrate</button>
+                <button class="lb-filter-btn" onclick="updateLeaderboard('mwr', this)">Monarch WR</button>
                 <button class="lb-filter-btn" onclick="updateLeaderboard('hours', this)">Hours</button>
                 <button class="lb-filter-btn" onclick="updateLeaderboard('wins', this)">Wins</button>
                 <button class="lb-filter-btn" onclick="updateLeaderboard('gold', this)">Gold</button>
@@ -145,7 +146,6 @@
     const MY_SHEET_ID = "1oQ4GC7sTXCikDYdQLY96CwPSUaeIoOJ3x6mYUjlZuYI"; 
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${MY_SHEET_ID}/gviz/tq?tqx=out:json`;
     
-    // سطر 214 المعدل للسيرفر الخاص بك
     const SECURE_API_URL = "http://212.132.120.102:15534/submit";
 
     let verifiedSoldiers = {};
@@ -177,20 +177,25 @@
                 const name = nameCell?.v?.toString() || nameCell?.f?.toString();
                 
                 if (name && name.toLowerCase() !== "name") {
+                    const wins = getNum(row.c[5]);
+                    const monarchWins = getNum(row.c[9]);
+                    
                     verifiedSoldiers[name.toLowerCase()] = {
                         originalName: name,
                         kills: getNum(row.c[1]), 
                         deaths: getNum(row.c[2]) || 1, 
                         gold: getNum(row.c[3]),
                         crowns: getNum(row.c[4]),
-                        wins: getNum(row.c[5]), 
+                        wins: wins, 
                         losses: getNum(row.c[6]), 
                         hours: parseFloat(row.c[7]?.v) || 0, 
                         buried: getNum(row.c[8]),
-                        monarch: getNum(row.c[9]),
-                        tournaments: getNum(row.c[10]), // جلب التورنامنت من العمود K
+                        monarch: monarchWins,
+                        tournaments: getNum(row.c[10]),
+                        mwr: parseFloat(((monarchWins / (wins || 1)) * 100).toFixed(1)),
+                        lastUpdate: row.c[11]?.f || row.c[11]?.v || "Never",
                         kd: parseFloat((getNum(row.c[1]) / (getNum(row.c[2]) || 1)).toFixed(2)),
-                        winrate: parseFloat(((getNum(row.c[5]) / (getNum(row.c[5]) + getNum(row.c[6]) || 1)) * 100).toFixed(1))
+                        winrate: parseFloat(((wins / (wins + getNum(row.c[6]) || 1)) * 100).toFixed(1))
                     };
                 }
             });
@@ -217,7 +222,7 @@
         const sorted = Object.values(verifiedSoldiers).sort((a, b) => (b[statKey] || 0) - (a[statKey] || 0)).slice(0, 15);
         sorted.forEach((player, index) => {
             let val = player[statKey];
-            if(statKey === 'winrate') val = val + "%";
+            if(statKey === 'winrate' || statKey === 'mwr') val = val + "%";
             else if (statKey === 'kd') val = val.toFixed(2);
             else if (typeof val === 'number') val = val.toLocaleString();
             
@@ -256,14 +261,17 @@
         const out = document.getElementById('statsOutput');
         if(data) {
             res.style.display = 'block';
-            let html = `<div class="stat-line"><span class="stat-label">Soldier</span><span class="stat-value" style="color:#c9a063">${data.originalName.toUpperCase()}</span></div>`;
+            let html = `<div style="text-align:center; color:#8c734c; font-size:0.7rem; margin-bottom:10px; border-bottom:1px dashed #8c734c; padding-bottom:5px;">LAST ARCHIVE UPDATE: ${data.lastUpdate}</div>`;
+            html += `<div class="stat-line"><span class="stat-label">Soldier</span><span class="stat-value" style="color:#c9a063">${data.originalName.toUpperCase()}</span></div>`;
             const statsLayout = [
                 { label: 'KILLS', val: data.kills }, { label: 'DEATHS', val: data.deaths },
                 { label: 'KD', val: data.kd }, { label: 'WINS', val: data.wins },
                 { label: 'LOSSES', val: data.losses }, { label: 'WINRATE', val: data.winrate + "%" },
                 { label: 'HOURS', val: data.hours }, { label: 'GOLD', val: data.gold.toLocaleString() },
-                { label: 'CROWNS', val: data.crowns.toLocaleString() }, { label: 'MONARCH', val: data.monarch },
-                { label: 'tournaments', val: data.tournaments }, // إضافة التورنامنت هنا
+                { label: 'CROWNS', val: data.crowns.toLocaleString() }, 
+                { label: 'MONARCH WINS', val: data.monarch },
+                { label: 'MONARCH WR', val: data.mwr + "%" },
+                { label: 'tournaments', val: data.tournaments },
                 { label: 'BURIED', val: data.buried }
             ];
             statsLayout.forEach(s => { html += `<div class="stat-line"><span class="stat-label">${s.label}</span><span class="stat-value">${s.val}</span></div>`; });
