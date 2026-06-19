@@ -255,6 +255,93 @@
             .lantern-container { top: 10px; right: 10px; }
             .lantern-body { width: 40px; height: 50px; }
         }
+
+        @media (max-width: 480px) {
+            .container { padding: 22px 16px; }
+            .stat-line { font-size: 0.78rem; }
+            .lb-table { font-size: 0.72rem; }
+            .lb-table th, .lb-table td { padding: 9px 6px; }
+            h1 { letter-spacing: 2px; font-size: 1.5rem; }
+        }
+
+        /* --- TAP / CLICK FEEDBACK (mobile feel) --- */
+        .tab-btn:active, .lb-filter-btn:active, .submit-btn:active,
+        .intro-btn:active, .suggestion-item:active, .bell-toggle:active,
+        .did-you-mean-chip:active { transform: scale(0.96); }
+        .tab-btn, .lb-filter-btn, .submit-btn, .did-you-mean-chip { transition: transform 0.15s ease, background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+
+        /* --- VISIBLE KEYBOARD FOCUS --- */
+        input:focus { border-color: #f0e68c; box-shadow: 0 0 0 2px rgba(240,230,140,0.3); }
+        .tab-btn:focus-visible, .lb-filter-btn:focus-visible, .submit-btn:focus-visible,
+        .intro-btn:focus-visible, .bell-toggle:focus-visible, .did-you-mean-chip:focus-visible {
+            outline: 2px solid #f0e68c; outline-offset: 2px;
+        }
+
+        /* --- ARCHIVE STATUS / LOADING --- */
+        .archive-status { font-size: 0.75rem; color: #8c734c; text-align: center; margin-top: 10px; letter-spacing: 1px; }
+        .lb-loading-row td { text-align: center; color: #8c734c; padding: 18px 0; background: transparent; border: none; }
+
+        /* --- RANK INSIGNIA (search result) --- */
+        @keyframes resultReveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #searchResult.revealing { animation: resultReveal 0.5s ease forwards; }
+        .insignia-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #c9a063; padding: 8px 16px; margin-bottom: 12px; background: rgba(201,160,99,0.08); font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 1.5px; color: #f0e68c; text-transform: uppercase; }
+        .archive-rank { font-size: 0.7rem; color: #8c734c; text-align: center; margin-bottom: 14px; letter-spacing: 0.5px; }
+        .archive-rank b { color: #c9a063; }
+
+        /* --- LEADERBOARD MEDALS --- */
+        .lb-rank.medal-1 { color: #f0e68c; border-left-color: #f0e68c; text-shadow: 0 0 8px rgba(240,230,140,0.7); }
+        .lb-rank.medal-2 { color: #d7d0c2; border-left-color: #d7d0c2; }
+        .lb-rank.medal-3 { color: #c08a52; border-left-color: #c08a52; }
+        #lbContainer { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .leaderboard-controls { -webkit-overflow-scrolling: touch; }
+        .lb-search-input { margin-bottom: 12px; font-size: 0.8rem; padding: 10px 12px; }
+
+        /* --- DID YOU MEAN --- */
+        .did-you-mean { text-align: center; color: #8c734c; font-size: 0.8rem; padding: 14px 10px; }
+        .did-you-mean-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
+        .did-you-mean-chip { border: 1px solid #8c734c; color: #c9a063; padding: 6px 12px; font-size: 0.75rem; cursor: pointer; font-family: 'Cinzel', serif; background: transparent; }
+        .did-you-mean-chip:hover { background: #8c734c; color: #1a1510; }
+
+        /* --- HANGING DESK BELL (audio toggle) --- */
+        .bell-toggle { position: fixed; top: 18px; right: 82px; z-index: 1000; width: 30px; height: 50px; cursor: pointer; outline: none; transform-origin: 50% 0%; animation: bellSwingIdle 3.4s ease-in-out infinite; }
+        .bell-toggle .bell-chain { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 16px; background: linear-gradient(180deg, rgba(192,164,80,0.6) 0%, rgba(192,164,80,0.3) 100%); box-shadow: 0 0 6px rgba(201,160,99,0.4); }
+        .bell-toggle .bell-loop { position: absolute; top: 13px; left: 50%; transform: translateX(-50%); width: 7px; height: 7px; border: 1.5px solid #c9a063; border-radius: 50%; background: #1a1510; }
+        .bell-toggle .bell-body { position: absolute; top: 17px; left: 50%; transform: translateX(-50%); width: 24px; height: 19px; border-radius: 50% 50% 40% 40% / 65% 65% 100% 100%; background: linear-gradient(140deg, #f0e68c 0%, #c9a063 35%, #8c734c 70%, #5c4a31 100%); box-shadow: inset -2px -1px 4px rgba(0,0,0,0.35), inset 2px 1px 3px rgba(255,240,200,0.4), 0 2px 6px rgba(0,0,0,0.5); transition: filter 0.6s ease, opacity 0.6s ease; }
+        .bell-toggle .bell-body::after { content: ''; position: absolute; left: -2px; right: -2px; bottom: 0; height: 2px; border-radius: 0 0 3px 3px; background: #3a2f1f; }
+        .bell-toggle .bell-clapper { position: absolute; top: 33px; left: 50%; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f0e68c, #5c4a31 80%); transform: translateX(-50%); transform-origin: 50% -10px; animation: clapperSwingIdle 3.4s ease-in-out infinite; transition: opacity 0.6s ease; }
+
+        @keyframes bellSwingIdle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        @keyframes clapperSwingIdle {
+            0%, 100% { transform: translateX(-50%) rotate(2deg); }
+            50% { transform: translateX(-50%) rotate(-2deg); }
+        }
+        @keyframes bellRing {
+            0% { transform: rotate(0deg); }
+            12% { transform: rotate(26deg); }
+            28% { transform: rotate(-22deg); }
+            44% { transform: rotate(16deg); }
+            60% { transform: rotate(-11deg); }
+            76% { transform: rotate(6deg); }
+            90% { transform: rotate(-2deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .bell-toggle.ringing { animation: bellRing 0.9s ease-out; }
+        .bell-toggle.ringing .bell-clapper { animation: bellRing 0.9s ease-out 0.04s; }
+
+        .bell-toggle.muted { animation: none; }
+        .bell-toggle.muted .bell-body { filter: grayscale(0.7) brightness(0.65); }
+        .bell-toggle.muted .bell-clapper { animation: none; opacity: 0.5; }
+
+        @media (max-width: 600px) { .bell-toggle { top: 10px; right: 52px; width: 24px; height: 42px; } }
+
+        /* --- RESPECT REDUCED MOTION --- */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+            .lantern-container { animation: none; }
+        }
     </style>
 </head>
 <body>
@@ -278,6 +365,8 @@
             <button class="tab-btn" id="btnLeaderboard" onclick="showSection('leaderboard')">Leaderboards</button>
         </div>
 
+        <div id="archiveStatus" class="archive-status" style="display:none;"></div>
+
         <div id="searchSection" class="section active">
             <div style="position:relative;">
                 <input type="text" id="searchName" placeholder="Enter Soldier Name..." oninput="handleAutocomplete()" autocomplete="off">
@@ -290,6 +379,7 @@
         </div>
 
         <div id="leaderboardSection" class="section">
+            <input type="text" id="lbSearchInput" class="lb-search-input" placeholder="Find your name in the rankings..." oninput="filterLeaderboard()" autocomplete="off">
             <div class="leaderboard-controls">
                 <button class="lb-filter-btn active" onclick="updateLeaderboard('kills', this)">Kills</button>
                 <button class="lb-filter-btn" onclick="updateLeaderboard('kd', this)">K/D</button>
@@ -325,6 +415,13 @@
             <div class="developer-credit">Logo Creator: trollerhd</div>
         </div>
     </div>
+</div>
+
+<div class="bell-toggle" id="muteToggle" onclick="toggleMute()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleMute();}" role="button" tabindex="0" aria-pressed="false" aria-label="Toggle sound" title="Silence the bell to mute sound">
+    <div class="bell-chain"></div>
+    <div class="bell-loop"></div>
+    <div class="bell-body"></div>
+    <div class="bell-clapper"></div>
 </div>
 
 <div class="lantern-container" id="lantern" onclick="toggleDarkMode()">
@@ -393,12 +490,14 @@
     // --- SYNTHETIC SOUND ENGINE ---
     const AudioEngine = {
         ctx: null,
+        muted: localStorage.getItem('ec_muted') === 'true',
         init() {
             if (!this.ctx) {
                 this.ctx = new (window.AudioContext || window.webkitAudioContext)();
             }
         },
         playClick() {
+            if (this.muted) return;
             this.init();
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
@@ -411,6 +510,7 @@
             osc.start(); osc.stop(this.ctx.currentTime + 0.1);
         },
         playPing() {
+            if (this.muted) return;
             this.init();
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
@@ -423,6 +523,7 @@
             osc.start(); osc.stop(this.ctx.currentTime + 0.3);
         },
         playShatter() {
+            if (this.muted) return;
             this.init();
             const noise = this.ctx.createBufferSource();
             const buffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.2, this.ctx.sampleRate);
@@ -438,6 +539,7 @@
             noise.start();
         },
         playWhoosh() {
+            if (this.muted) return;
             this.init();
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
@@ -449,6 +551,22 @@
             gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
             osc.connect(gain); gain.connect(this.ctx.destination);
             osc.start(); osc.stop(this.ctx.currentTime + 0.4);
+        },
+        playBell() {
+            if (this.muted) return;
+            this.init();
+            const osc = this.ctx.createOscillator();
+            const osc2 = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine'; osc2.type = 'sine';
+            osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+            osc2.frequency.setValueAtTime(1318, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.09, this.ctx.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.7);
+            osc.connect(gain); osc2.connect(gain); gain.connect(this.ctx.destination);
+            osc.start(); osc2.start();
+            osc.stop(this.ctx.currentTime + 0.7); osc2.stop(this.ctx.currentTime + 0.7);
         }
     };
 
@@ -456,6 +574,15 @@
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${MY_SHEET_ID}/gviz/tq?tqx=out:json`;
     let verifiedSoldiers = {};
     let isDarkMode = true;
+    let dataLoaded = false;
+    let currentStatKey = 'kills';
+
+    // Restore returning visitor's lantern preference (first-time visitors keep the default cinematic state)
+    (function restoreThemePreference() {
+        const saved = localStorage.getItem('ec_mode');
+        if (saved === 'light') { document.body.classList.add('light-mode'); isDarkMode = false; }
+        else if (saved === 'dark') { document.body.classList.add('dark-mode'); isDarkMode = true; }
+    })();
 
     function showSection(id) {
         AudioEngine.playClick();
@@ -463,7 +590,7 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id + 'Section').classList.add('active');
         document.getElementById('btn' + id.charAt(0).toUpperCase() + id.slice(1)).classList.add('active');
-        if(id === 'leaderboard') updateLeaderboard('kills');
+        if(id === 'leaderboard') updateLeaderboard(currentStatKey);
     }
 
     const getNum = (cell) => {
@@ -473,6 +600,9 @@
     };
 
     async function fetchStats() {
+        const status = document.getElementById('archiveStatus');
+        status.style.display = 'block';
+        status.innerText = '⌛ Unsealing the archives...';
         try {
             const response = await fetch(SHEET_URL);
             const text = await response.text();
@@ -507,37 +637,79 @@
                     };
                 }
             });
-            updateLeaderboard('kills');
+            dataLoaded = true;
+            status.style.display = 'none';
+            updateLeaderboard(currentStatKey);
         } catch (e) { 
             console.error("Fetch error:", e); 
+            status.innerText = '⚠ The archives could not be reached. Check your connection and reload.';
         }
     }
     fetchStats();
+
+    function buildSortedList(statKey) {
+        return Object.values(verifiedSoldiers).sort((a, b) => (b[statKey] || 0) - (a[statKey] || 0));
+    }
+
+    function formatStatValue(statKey, val) {
+        if (statKey === 'winrate' || statKey === 'mwr') return val + "%";
+        if (statKey === 'kd') return val.toFixed(2);
+        if (typeof val === 'number') return val.toLocaleString();
+        return val;
+    }
+
+    function renderLeaderboardRows(rows) {
+        const lbBody = document.getElementById('lbBody');
+        lbBody.innerHTML = '';
+        if (!rows.length) {
+            lbBody.innerHTML = `<tr class="lb-loading-row"><td colspan="3">No matching soldier found.</td></tr>`;
+            return;
+        }
+        rows.forEach(({ rank, player, statKey }) => {
+            const val = formatStatValue(statKey, player[statKey]);
+            const medal = rank === 1 ? ' medal-1' : rank === 2 ? ' medal-2' : rank === 3 ? ' medal-3' : '';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td class="lb-rank${medal}">#${rank}</td><td class="lb-name">${player.originalName}</td><td class="lb-value">${val}</td>`;
+            lbBody.appendChild(tr);
+        });
+    }
 
     function updateLeaderboard(statKey, btn) {
         if(btn) {
             AudioEngine.playClick();
             document.querySelectorAll('.lb-filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            const searchBox = document.getElementById('lbSearchInput');
+            if (searchBox) searchBox.value = '';
         }
+        currentStatKey = statKey;
         const headerTitle = btn ? btn.innerText : statKey.toUpperCase();
         document.getElementById('lbHeader').innerText = headerTitle;
-        const lbBody = document.getElementById('lbBody');
-        if (!lbBody) return;
-        lbBody.innerHTML = '';
-        const sorted = Object.values(verifiedSoldiers).sort((a, b) => (b[statKey] || 0) - (a[statKey] || 0)).slice(0, 15);
-        sorted.forEach((player, index) => {
-            let val = player[statKey];
-            if(statKey === 'winrate' || statKey === 'mwr') val = val + "%";
-            else if (statKey === 'kd') val = val.toFixed(2);
-            else if (typeof val === 'number') val = val.toLocaleString();
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="lb-rank">#${index + 1}</td><td class="lb-name">${player.originalName}</td><td class="lb-value">${val}</td>`;
-            lbBody.appendChild(tr);
-        });
+        if (!dataLoaded) {
+            document.getElementById('lbBody').innerHTML = `<tr class="lb-loading-row"><td colspan="3">⌛ Loading rankings...</td></tr>`;
+            return;
+        }
+        const sorted = buildSortedList(statKey).slice(0, 15).map((player, i) => ({ rank: i + 1, player, statKey }));
+        renderLeaderboardRows(sorted);
     }
 
+    function filterLeaderboard() {
+        const query = document.getElementById('lbSearchInput').value.trim().toLowerCase();
+        if (!query) { updateLeaderboard(currentStatKey); return; }
+        if (!dataLoaded) return;
+        const rows = buildSortedList(currentStatKey)
+            .map((player, i) => ({ rank: i + 1, player, statKey: currentStatKey }))
+            .filter(r => r.player.originalName.toLowerCase().includes(query))
+            .slice(0, 20);
+        renderLeaderboardRows(rows);
+    }
+
+    let autocompleteTimer = null;
     function handleAutocomplete() {
+        clearTimeout(autocompleteTimer);
+        autocompleteTimer = setTimeout(runAutocomplete, 120);
+    }
+    function runAutocomplete() {
         const input = document.getElementById('searchName').value.toLowerCase();
         const box = document.getElementById('suggestions');
         box.innerHTML = '';
@@ -559,30 +731,105 @@
         } else { box.style.display = 'none'; }
     }
 
+    // Honorific earned from a soldier's record. Checked top-down; first match wins.
+    // Tune the thresholds here to match your community's real stat distribution.
+    const TITLE_TIERS = [
+        { test: d => d.monarch >= 3, label: 'Reigning Monarch', icon: '👑' },
+        { test: d => d.monarch >= 1, label: 'Crowned Victor', icon: '👑' },
+        { test: d => d.winrate >= 70 && d.wins >= 25, label: 'Master Tactician', icon: '⚔️' },
+        { test: d => d.kills >= 1000, label: 'Battlefield Legend', icon: '🗡️' },
+        { test: d => d.hours >= 200, label: 'Battle-Hardened Veteran', icon: '🛡️' },
+        { test: d => d.tournaments >= 3, label: 'Tournament Champion', icon: '🏆' },
+        { test: () => true, label: 'Blooded Conscript', icon: '🪖' }
+    ];
+    function getTitle(data) {
+        return TITLE_TIERS.find(t => t.test(data));
+    }
+
+    // Where a soldier sits among everyone in the archive for a given stat (no extra data needed).
+    function getRankInfo(statKey, originalName) {
+        const all = Object.values(verifiedSoldiers).sort((a, b) => (b[statKey] || 0) - (a[statKey] || 0));
+        const idx = all.findIndex(s => s.originalName === originalName);
+        return { rank: idx + 1, total: all.length };
+    }
+
+    // Animates a number from 0 up to its real value for a small ceremonial reveal.
+    function animateValue(el, end, suffix, decimals) {
+        const duration = 700;
+        const start = performance.now();
+        function tick(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = end * eased;
+            el.innerText = (decimals ? current.toFixed(decimals) : Math.round(current)).toLocaleString() + (suffix || '');
+            if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.innerText = str;
+        return div.innerHTML;
+    }
+
     function searchSoldier() {
         AudioEngine.playClick();
         const input = document.getElementById('searchName').value.trim().toLowerCase();
-        const data = verifiedSoldiers[input];
         const res = document.getElementById('searchResult');
         const out = document.getElementById('statsOutput');
-        if(data) {
+        const reveal = () => { res.classList.remove('revealing'); void res.offsetWidth; res.classList.add('revealing'); };
+
+        if (!dataLoaded) {
             res.style.display = 'block';
-            let html = `<div style="text-align:center; color:#8c734c; font-size:0.7rem; margin-bottom:10px; border-bottom:1px dashed #8c734c; padding-bottom:5px;">LAST ARCHIVE UPDATE: ${data.lastUpdate}</div>`;
+            out.innerHTML = `<div class="did-you-mean">The archives are still being unsealed. Give it a moment, then consult again.</div>`;
+            reveal();
+            return;
+        }
+
+        const data = verifiedSoldiers[input];
+        if (data) {
+            res.style.display = 'block';
+            const title = getTitle(data);
+            const killRank = getRankInfo('kills', data.originalName);
+            const goldRank = getRankInfo('gold', data.originalName);
+            let html = `<div class="insignia-badge">${title.icon} ${title.label}</div>`;
+            html += `<div style="text-align:center; color:#8c734c; font-size:0.7rem; margin:10px 0; border-bottom:1px dashed #8c734c; padding-bottom:5px;">LAST ARCHIVE UPDATE: ${data.lastUpdate}</div>`;
+            html += `<div class="archive-rank">Rank <b>#${killRank.rank}</b> of ${killRank.total} in Kills &middot; Rank <b>#${goldRank.rank}</b> of ${goldRank.total} in Gold</div>`;
             html += `<div class="stat-line"><span class="stat-label">Soldier</span><span class="stat-value" style="color:#c9a063">${data.originalName.toUpperCase()}</span></div>`;
             const statsLayout = [
-                { label: 'KILLS', val: data.kills }, { label: 'DEATHS', val: data.deaths },
-                { label: 'KD', val: data.kd }, { label: 'WINS', val: data.wins },
-                { label: 'LOSSES', val: data.losses }, { label: 'WINRATE', val: data.winrate + "%" },
-                { label: 'HOURS', val: data.hours }, { label: 'GOLD', val: data.gold.toLocaleString() },
-                { label: 'CROWNS', val: data.crowns.toLocaleString() }, 
-                { label: 'MONARCH WINS', val: data.monarch },
-                { label: 'MONARCH WR', val: data.mwr + "%" },
-                { label: 'TOURNAMENTS', val: data.tournaments },
-                { label: 'BURIED', val: data.buried }
+                { label: 'KILLS', val: data.kills, decimals: 0 }, { label: 'DEATHS', val: data.deaths, decimals: 0 },
+                { label: 'KD', val: data.kd, decimals: 2 }, { label: 'WINS', val: data.wins, decimals: 0 },
+                { label: 'LOSSES', val: data.losses, decimals: 0 }, { label: 'WINRATE', val: data.winrate, decimals: 1, suffix: '%' },
+                { label: 'HOURS', val: data.hours, decimals: 1 }, { label: 'GOLD', val: data.gold, decimals: 0 },
+                { label: 'CROWNS', val: data.crowns, decimals: 0 },
+                { label: 'MONARCH WINS', val: data.monarch, decimals: 0 },
+                { label: 'MONARCH WR', val: data.mwr, decimals: 1, suffix: '%' },
+                { label: 'TOURNAMENTS', val: data.tournaments, decimals: 0 },
+                { label: 'BURIED', val: data.buried, decimals: 0 }
             ];
-            statsLayout.forEach(s => { html += `<div class="stat-line"><span class="stat-label">${s.label}</span><span class="stat-value">${s.val}</span></div>`; });
+            statsLayout.forEach((s, i) => { html += `<div class="stat-line"><span class="stat-label">${s.label}</span><span class="stat-value" id="sv${i}">0</span></div>`; });
             out.innerHTML = html;
-        } else { alert("Soldier not found in the archives!"); }
+            reveal();
+            statsLayout.forEach((s, i) => animateValue(document.getElementById('sv' + i), s.val, s.suffix, s.decimals));
+        } else {
+            res.style.display = 'block';
+            const matches = Object.keys(verifiedSoldiers).filter(n => n.includes(input)).slice(0, 5);
+            if (matches.length) {
+                out.innerHTML = `<div class="did-you-mean">No exact record for "${escapeHtml(input)}". Did you mean:</div><div class="did-you-mean-chips" id="dymChips"></div>`;
+                const box = document.getElementById('dymChips');
+                matches.forEach(m => {
+                    const btn = document.createElement('button');
+                    btn.className = 'did-you-mean-chip';
+                    btn.innerText = verifiedSoldiers[m].originalName;
+                    btn.onclick = () => { document.getElementById('searchName').value = verifiedSoldiers[m].originalName; searchSoldier(); };
+                    box.appendChild(btn);
+                });
+            } else {
+                out.innerHTML = `<div class="did-you-mean">No record found for "${escapeHtml(input)}" in the archives.<br>Ask to be added in the Imperial Discord.</div>`;
+            }
+            reveal();
+        }
     }
 
     function toggleDarkMode() {
@@ -595,8 +842,31 @@
             document.body.classList.remove('dark-mode');
             document.body.classList.add('light-mode');
         }
+        localStorage.setItem('ec_mode', isDarkMode ? 'dark' : 'light');
         createParticles();
     }
+
+    function toggleMute() {
+        AudioEngine.muted = !AudioEngine.muted;
+        localStorage.setItem('ec_muted', AudioEngine.muted);
+        const bell = document.getElementById('muteToggle');
+        bell.classList.toggle('muted', AudioEngine.muted);
+        bell.setAttribute('aria-pressed', AudioEngine.muted);
+        if (AudioEngine.muted) {
+            bell.title = 'Ring the bell to unmute';
+        } else {
+            bell.title = 'Silence the bell to mute sound';
+            bell.classList.add('ringing');
+            setTimeout(() => bell.classList.remove('ringing'), 900);
+            AudioEngine.playBell();
+        }
+    }
+    (function syncBellState() {
+        const bell = document.getElementById('muteToggle');
+        bell.classList.toggle('muted', AudioEngine.muted);
+        bell.setAttribute('aria-pressed', AudioEngine.muted);
+        bell.title = AudioEngine.muted ? 'Ring the bell to unmute' : 'Silence the bell to mute sound';
+    })();
 
     function createParticles() {
         const lantern = document.getElementById('lantern');
