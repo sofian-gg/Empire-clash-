@@ -288,6 +288,37 @@
         .archive-rank { font-size: 0.7rem; color: #8c734c; text-align: center; margin-bottom: 14px; letter-spacing: 0.5px; }
         .archive-rank b { color: #c9a063; }
 
+        /* --- SERVICE RECORD DOSSIER --- */
+        .dossier-section { margin-top: 24px; padding-top: 4px; position: relative; }
+        .dossier-header { font-family: 'Cinzel', serif; font-size: 0.78rem; letter-spacing: 3px; text-align: center; color: #c9a063; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+        .dossier-header::before, .dossier-header::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #8c734c, transparent); }
+        .dossier-text {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: 0.95rem;
+            line-height: 1.75;
+            color: #d8c8a4;
+            text-align: justify;
+            padding: 16px 18px 14px;
+            background: linear-gradient(180deg, rgba(60,48,32,0.25), rgba(30,24,16,0.25));
+            border: 1px solid #5c4a31;
+            border-left: 3px solid #c9a063;
+            border-radius: 2px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.25);
+            position: relative;
+        }
+        .dossier-text::before {
+            content: '“';
+            position: absolute;
+            top: -6px; left: 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 2.6rem;
+            color: #8c734c;
+            opacity: 0.6;
+            font-style: normal;
+        }
+        .dossier-stamp { text-align: right; font-size: 0.65rem; color: #8c734c; margin-top: 8px; letter-spacing: 1px; font-style: italic; font-family: 'Cinzel', serif; text-transform: uppercase; }
+
         /* --- LEADERBOARD MEDALS --- */
         .lb-rank.medal-1 { color: #f0e68c; border-left-color: #f0e68c; text-shadow: 0 0 8px rgba(240,230,140,0.7); }
         .lb-rank.medal-2 { color: #d7d0c2; border-left-color: #d7d0c2; }
@@ -572,7 +603,9 @@
 
     const MY_SHEET_ID = "1oQ4GC7sTXCikDYdQLY96CwPSUaeIoOJ3x6mYUjlZuYI"; 
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${MY_SHEET_ID}/gviz/tq?tqx=out:json`;
+    const RECORDS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${MY_SHEET_ID}/gviz/tq?tqx=out:json&sheet=record`;
     let verifiedSoldiers = {};
+    let soldierRecords = {};
     let isDarkMode = true;
     let dataLoaded = false;
     let currentStatKey = 'kills';
@@ -645,7 +678,33 @@
             status.innerText = '⚠ The archives could not be reached. Check your connection and reload.';
         }
     }
+    async function fetchRecords() {
+        try {
+            const response = await fetch(RECORDS_SHEET_URL);
+            const text = await response.text();
+            const json = JSON.parse(text.substr(47).slice(0, -2));
+            const rows = json.table.rows;
+            soldierRecords = {};
+            rows.forEach(row => {
+                const nameCell = row.c && row.c[0];
+                const name = nameCell?.v?.toString() || nameCell?.f?.toString();
+                if (!name || name.toLowerCase() === "name") return;
+                const recordCell = row.c[1];
+                const recordText = (recordCell?.v?.toString() || recordCell?.f?.toString() || "").trim();
+                if (!recordText) return;
+                const timeCell = row.c[2];
+                soldierRecords[name.toLowerCase()] = {
+                    text: recordText,
+                    time: timeCell?.f || timeCell?.v || "Unknown"
+                };
+            });
+        } catch (e) {
+            console.error("Records fetch error:", e);
+            // Records are a bonus layer on top of stats — a failure here should never block the stats tab.
+        }
+    }
     fetchStats();
+    fetchRecords();
 
     function buildSortedList(statKey) {
         return Object.values(verifiedSoldiers).sort((a, b) => (b[statKey] || 0) - (a[statKey] || 0));
@@ -809,6 +868,16 @@
                 { label: 'BURIED', val: data.buried, decimals: 0 }
             ];
             statsLayout.forEach((s, i) => { html += `<div class="stat-line"><span class="stat-label">${s.label}</span><span class="stat-value" id="sv${i}">0</span></div>`; });
+
+            const record = soldierRecords[input];
+            if (record) {
+                html += `<div class="dossier-section">`;
+                html += `<div class="dossier-header">Service Record</div>`;
+                html += `<div class="dossier-text">${escapeHtml(record.text)}</div>`;
+                html += `<div class="dossier-stamp">Filed: ${escapeHtml(record.time.toString())}</div>`;
+                html += `</div>`;
+            }
+
             out.innerHTML = html;
             reveal();
             statsLayout.forEach((s, i) => animateValue(document.getElementById('sv' + i), s.val, s.suffix, s.decimals));
